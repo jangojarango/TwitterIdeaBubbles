@@ -35,7 +35,7 @@ $(function(){
 	});
 	
 	function getWordsFromTweets(q){
-		var url='https://search.twitter.com/search.json?q='+encodeURIComponent(q);
+		var url='https://10.67.33.245:443/search.json?q='+encodeURIComponent(q);
 		var data;
 		var blacklist= ['http','@'];
 		var words = q.split(' ');	//start off by having the first word of the twitter query in the list of words
@@ -313,7 +313,7 @@ $(function(){
 	$('.queryInput').click(function(){
 		$(this).val('');
 	});
-	// attach events
+	// attach newBubbleClick
 	$body.click(spawn);
 			
 });
