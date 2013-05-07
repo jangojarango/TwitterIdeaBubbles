@@ -1,6 +1,6 @@
 html, body {
-	width: 100%;
-	height: 100%;
+	width: 98%;
+	height: 98%;
 	background-color: #eee;
 	overflow: hidden;
 	
@@ -20,7 +20,7 @@ html, body {
 	background-size: cover;
 	
 	font-family: sans-serif; 
-	text-align:right;
+	text-align:left;
 }
 
 .idea {
@@ -88,4 +88,7 @@ input{
 	box-shadow: inset 0 3px 10px #6B9EA8;
 	padding: 5px 10px;
 	color: #005;
+}
+.lastSearchTerm{
+	font-weight: bold;
 }

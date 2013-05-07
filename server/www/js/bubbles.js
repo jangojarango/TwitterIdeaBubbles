@@ -4,7 +4,7 @@ $(function(){
 	var $idea = $('<div class="idea"></div>').width(dia).height(dia);
 	var $body = $('body');
 	var speed = 40;
-	var damp = 0.99;
+	var damp = 0.98;
 	var rate = 200;
 	var minspeed = 0.6;
 	var hitrate = function(){
@@ -14,14 +14,16 @@ $(function(){
 		//console.log(x,m,c,m*x+c);
 		return m*x + c;
 	};
-	var max_population = 20;
+	var max_population = 30;
 	var min_pop = 2;
 	var max_characters = 10;
 	var max_ideas_listed = 15;
 	
-	
 	//var seeds = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
 	var seeds = ['makerFaireUK','CultureLab'];
+	var seeds = [''];
+	var blacklist= /^(http|@|RT)/i; //regexp for filter fct.
+	var lastCollisionText = seeds[0] + ' ' +seeds[1];
 	
 	//begin of AJR edits	
 	var tweetsReceived=0;
@@ -34,11 +36,18 @@ $(function(){
 		
 	});
 	
+	
+	var SEARCH_NUM=0;
 	function getWordsFromTweets(q){
-		var url='https://10.67.33.245:443/search.json?q='+encodeURIComponent(q);
+		console.log('getting new tweets for search term: '+q);
+		//var url='http://localhost:8080/search.json?q='+encodeURIComponent(q);
+		var url='https://search.twitter.com/search.json?'+
+			'result_type=recent&'+
+			'rpp=5&'+
+			'lang=en&'+
+			'q='+encodeURIComponent(q);
 		var data;
-		var blacklist= ['http','@'];
-		var words = q.split(' ');	//start off by having the first word of the twitter query in the list of words
+		//var words = q.split(' ');	//start off by having the first word of the twitter query in the list of words
 		
 		$.getJSON(url, function (data_,status){
 			data=data_;
@@ -51,18 +60,35 @@ $(function(){
 				//console.log(data.results[i].from_user);
 				var txt=data.results[i].text.split(' ');
 				for(var j=0;j<txt.length;j++){ 
-					words.push(txt[j]);		////get each word
+					//words.push(txt[j]);		//get each word
+					if(!blacklist.test(txt[j])){	//filter blacklisted words out
+						seeds.push(txt[j]);		//push word to seed pool
+					}
 				}
 			}
 			
-			//console.log('words:/n'+JSON.stringify(words));
-			//seeds.concat(words);
-			seeds = words;
+			//$('.lastSearchTerms').html($('.lastSearchTerm').html()+'<br/>'+q);
 			
-
-
-			//return words;
-				
+			var $searchTerm = $('<div class="searchTerm"></div>');
+			$searchTerm
+			//.css({left:x,top:y,position:'absolute'})
+			.attr('id','searchTerm' + (SEARCH_NUM++))
+			.text(SEARCH_NUM+': '+q);
+			/*.click(function(e){
+				var collText = $(e.target).text();
+				//alert('washere!');
+				console.log('now searching for: '+ collText);
+				$('.queryInput').val(collText);
+				getWordsFromTweets(collText);
+			})
+			.appendTo($body)
+			.fadeOut(10000,function(){
+				$(this).remove();
+			})*/
+			$('.lastSearchTerms').prepend($searchTerm);
+			
+			
+			
 		});
 	}
 	
@@ -70,8 +96,8 @@ $(function(){
 		//if (Math.random()>hitrate()) return;
 		var rx = Math.random()*$(window).width();
 		var ry = Math.random()*$(window).height();
-		seeds.push('Newcastle Uni'); //populate the dicitionary with words
-		seeds.push('CultureLab');
+		//seeds.push('Newcastle Uni'); //populate the dicitionary with words
+		//seeds.push('CultureLab');
 		spawn({clientX:rx,clientY:ry});
 		 
 	}, 15000);
@@ -106,21 +132,27 @@ $(function(){
 	
 	// interaction functions
 	function spawn(e,word) {
-
+		console.log('Words Left in Pool: '+seeds.length);
 		var population = $('.idea').length;
 		
 		var x = e.clientX;
 		var y = e.clientY;
 		
-		//if (word == undefined) {
+		//if (word === undefined) { 
 			var r = Math.floor(Math.random()*seeds.length);	//pick random word from seed
 			word = seeds[r];
 			
-			for(var i = seeds.length; i--;){
-				if (seeds[i] === word) 
+			for(var i = seeds.length; i--;){ //WIP why is this a for loop?
+				if (seeds[i] === word){
+					//lastCollisionWords = word;
 					seeds.splice(i, 1); //remove from seeds array
+					//console.log('was here');
+				}
 			}
-			
+			if(seeds.length<1){ // WIP if no words are present fire new twitter query
+				getWordsFromTweets(lastCollisionText);
+				console.log('running low on tweets!');
+			}
 		//}
 		
 		var $new = $idea.clone();
@@ -249,7 +281,6 @@ $(function(){
 			$('.collisionPoint').children().first().remove();
 		}
 		
-
 		var $collisionText= $('<div class="collisionPoint"></div>');
 		$collisionText
 			.css({left:x,top:y,position:'absolute'})
@@ -265,18 +296,17 @@ $(function(){
 			})
 			.appendTo($body)
 			.fadeOut(10000,function(){
-				//.remove(); //WIP
 				$(this).remove();
 			});
 		
-		console.log('Words Left in Pool: '+seeds.length);
-		
+		lastCollisionText = $this.text()+' '+$that.text();
 		spawn({clientX:x,clientY:y},new_word);// spawn new bubble
 		//spawn({clientX:x,clientY:y});// spawn new bubble
-		//WIP
+		
 		//clear list of words
 		//select language
 		//pixelphones
+		//implement working filter function
 	}
 	
 	// animate
