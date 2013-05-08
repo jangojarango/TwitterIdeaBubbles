@@ -89,6 +89,9 @@ input{
 	padding: 5px 10px;
 	color: #005;
 }
+.lastSearchTerms {
+	
+}
 .userGeneratedSearchTerm{
 	font-weight: bold;
 	position: relative;
@@ -100,4 +103,22 @@ input{
 }
 .alwaysFront{
 	z-index: 100;
+}
+.numWords{
+	text-decoration: none;
+}
+#selectedTweet{
+	position: absolute;
+	bottom: 30px;
+	background-color: #E2F4FE;
+	padding: 5px;
+	border-radius: 10px;
+	z-index: 105;
+	opacity: 0.6;
+}
+.tweet {
+	text-decoration: none;
+}
+.twitterUser {
+	
 }
