@@ -89,6 +89,11 @@ input{
 	padding: 5px 10px;
 	color: #005;
 }
-.lastSearchTerm{
+.searchTerm{
 	font-weight: bold;
+	position: relative;
+	
+}
+.alwaysFront{
+	z-index: 100;
 }

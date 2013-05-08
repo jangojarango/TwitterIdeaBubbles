@@ -1,5 +1,9 @@
 $(function(){
 	
+	var NUM_OF_TWEETS=5;
+	var LANGUAGE = 'en';
+	
+	var ISRUNNING = false;
 	var dia = 100;
 	var $idea = $('<div class="idea"></div>').width(dia).height(dia);
 	var $body = $('body');
@@ -20,9 +24,9 @@ $(function(){
 	var max_ideas_listed = 15;
 	
 	//var seeds = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
-	var seeds = ['makerFaireUK','CultureLab'];
+	//var seeds = ['makerFaireUK','CultureLab'];
 	var seeds = [''];
-	var blacklist= /^(http|@|RT)/i; //regexp for filter fct.
+	var blacklist= /(http|@|RT)/i; //regexp for filter fct.
 	var lastCollisionText = seeds[0] + ' ' +seeds[1];
 	
 	//begin of AJR edits	
@@ -39,16 +43,23 @@ $(function(){
 	
 	var SEARCH_NUM=0;
 	function getWordsFromTweets(q){
+		if(typeof q == 'undefined'){
+			console.log('called twitter with undefined');
+			return;
+		}
+		if(ISRUNNING)
+			return;
+		
 		console.log('getting new tweets for search term: '+q);
 		//var url='http://localhost:8080/search.json?q='+encodeURIComponent(q);
 		var url='https://search.twitter.com/search.json?'+
 			'result_type=recent&'+
-			'rpp=5&'+
-			'lang=en&'+
+			'rpp='+NUM_OF_TWEETS+'&'+
+			'lang='+LANGUAGE+'&'+
 			'q='+encodeURIComponent(q);
 		var data;
 		//var words = q.split(' ');	//start off by having the first word of the twitter query in the list of words
-		
+		ISRUNNING=true;
 		$.getJSON(url, function (data_,status){
 			data=data_;
 			console.log('status: '+data);
@@ -67,28 +78,14 @@ $(function(){
 				}
 			}
 			
-			//$('.lastSearchTerms').html($('.lastSearchTerm').html()+'<br/>'+q);
-			
-			var $searchTerm = $('<div class="searchTerm"></div>');
+			var $searchTerm = $('<div class="searchTerm alwaysFront"></div>');
 			$searchTerm
-			//.css({left:x,top:y,position:'absolute'})
-			.attr('id','searchTerm' + (SEARCH_NUM++))
-			.text(SEARCH_NUM+': '+q);
-			/*.click(function(e){
-				var collText = $(e.target).text();
-				//alert('washere!');
-				console.log('now searching for: '+ collText);
-				$('.queryInput').val(collText);
-				getWordsFromTweets(collText);
-			})
-			.appendTo($body)
-			.fadeOut(10000,function(){
-				$(this).remove();
-			})*/
+				//.css({left:x,top:y,position:'absolute'})
+				.attr('id','searchTerm' + (SEARCH_NUM++))
+				.text(SEARCH_NUM+': '+q);
 			$('.lastSearchTerms').prepend($searchTerm);
-			
-			
-			
+			$('.numWords').html(seeds.length);
+			ISRUNNING = false;
 		});
 	}
 	
@@ -133,6 +130,9 @@ $(function(){
 	// interaction functions
 	function spawn(e,word) {
 		console.log('Words Left in Pool: '+seeds.length);
+		
+		$('.numWords').html(seeds.length);
+		
 		var population = $('.idea').length;
 		
 		var x = e.clientX;
