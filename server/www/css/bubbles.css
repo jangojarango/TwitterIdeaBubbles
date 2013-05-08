@@ -24,7 +24,6 @@ html, body {
 }
 
 .idea {
-	background-color: #900;
 	border-radius: 100%;
 	position: absolute;
 	transition: top 1s linear, left 1s linear;
@@ -35,7 +34,11 @@ html, body {
 	line-height: 100px;
 	text-align: center;
 	overflow: hidden;
+	
+	background-color: #900;
 	background-image:url('../img/bubble3.png');
+	background: -webkit-radial-gradient(circle, #FFC887, #FF8A00);
+);
 	
 }
 .collisionPoint {
@@ -82,6 +85,9 @@ h1 {
 	/*background-color: grey; */
 }
 input{
+	/*
+	width: 98%; 
+	*/
 	border-radius: 15px;
 	border: solid 1px #8E96BD;
 	background-color: #D9F6FA;
@@ -90,7 +96,12 @@ input{
 	color: #005;
 }
 .lastSearchTerms {
-	
+	width: 250px;
+	background-color: #E2F4FE;
+	padding: 10px;
+	border-radius: 10px;
+	opacity: 0.65;
+	overflow: hidden;
 }
 .userGeneratedSearchTerm{
 	font-weight: bold;
@@ -107,14 +118,15 @@ input{
 .numWords{
 	text-decoration: none;
 }
-#selectedTweet{
+.selectedTweetInfo{
 	position: absolute;
 	bottom: 30px;
 	background-color: #E2F4FE;
 	padding: 5px;
 	border-radius: 10px;
 	z-index: 105;
-	opacity: 0.6;
+	opacity: 0.7;
+	font-weight: bold;
 }
 .tweet {
 	text-decoration: none;
