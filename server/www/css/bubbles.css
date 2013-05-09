@@ -37,12 +37,11 @@ html, body {
 	
 	background-color: #900;
 	background-image:url('../img/bubble3.png');
-	background: -webkit-radial-gradient(circle, #FFC887, #FF8A00);
-);
+	background: -webkit-radial-gradient(30px 30px, circle, #FFC887, #FF8A00);
 	
 }
 .collisionPoint {
-	padding: 3px;
+	padding: 6px;
 	position: absolute;
 	background-color: #E2F4FE;
 	border-radius: 100%;
@@ -113,7 +112,7 @@ input{
 	position: relative;
 }
 .alwaysFront{
-	z-index: 100;
+	z-index: 110;
 }
 .numWords{
 	text-decoration: none;
