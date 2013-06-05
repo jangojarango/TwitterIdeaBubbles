@@ -59,16 +59,18 @@ html, body {
 div.new {
 	/*background-color: #009;*/
 	-webkit-animation: grow 1s;
+	animation: grow 1s;
 }
 
 .hit {
 	-webkit-animation: flash 0.5s;
+	animation: flash 0.5s;
 	/*background-color: #600;*/
 }
 @-webkit-keyframes fadeIn {
 	from {opacity: 0.7}
 	  to {opacity: 1}
-}
+}}
 @-webkit-keyframes flash {
 	from {opacity: 0.7}
 	  to {opacity: 1}
@@ -111,9 +113,7 @@ input{
 	font-weight: normal;
 	position: relative;
 }
-.alwaysFront{
-	z-index: 110;
-}
+
 .numWords{
 	text-decoration: none;
 }
@@ -126,6 +126,9 @@ input{
 	z-index: 105;
 	opacity: 0.7;
 	font-weight: bold;
+}
+.alwaysFront{
+	z-index: 110;
 }
 .tweet {
 	text-decoration: none;

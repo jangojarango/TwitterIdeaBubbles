@@ -19,7 +19,7 @@ $(function(){
 		return m*x + c;
 	};
 	var max_population = 30;
-	var min_pop = 2;
+	var min_pop = 20;
 	var max_characters = 10;
 	var max_ideas_listed = 15;
 	
@@ -39,6 +39,8 @@ $(function(){
 		getWordsFromTweets(userInput,false);
 		
 	});
+	
+	$('.numTweets').html(NUM_OF_TWEETS);
 	
 	function get_random_color() {
 		
@@ -77,11 +79,13 @@ $(function(){
 		ISRUNNING=true;
 		console.log('getting new tweets for search term: '+q);
 		//var url='http://localhost:8080/search.json?q='+encodeURIComponent(q);
-		var url='https://search.twitter.com/search.json?'+
+		//var url='https://search.twitter.com/search.json?'+
+		var url='http://localhost/tib/proxy.php?'+
 			'result_type=recent&'+
 			'rpp='+NUM_OF_TWEETS+'&'+
 			'lang='+LANGUAGE+'&'+
 			'q='+encodeURIComponent(q);
+			
 		var data;
 		//var words = q.split(' ');	//start off by having the first word of the twitter query in the list of words
 		
