@@ -2,7 +2,7 @@ $(function(){
 	
 	var NUM_OF_TWEETS=5;
 	var LANGUAGE = 'en';
-	
+	var TWITTER_PROXY_URL = 'http://www.andreasreiter.eu/tib/proxy.php?';
 	var ISRUNNING = false;
 	var dia = 100;
 	var $idea = $('<div class="idea"></div>').width(dia).height(dia);
@@ -18,8 +18,11 @@ $(function(){
 		//console.log(x,m,c,m*x+c);
 		return m*x + c;
 	};
-	var max_population = 30;
-	var min_pop = 20;
+	
+	//will be overwritten!
+	var max_population = 25;
+	var min_pop = 10;
+	setMaxMinBubbles(); //by this
 	var max_characters = 10;
 	var max_ideas_listed = 15;
 	
@@ -28,6 +31,9 @@ $(function(){
 	var seeds = [];
 	var blacklist= /(http|@|RT)/i; //regexp for filter fct.
 	var lastCollisionText;
+	
+	console.log('height: '+$(window).height());
+	console.log('width: '+$(window).width());
 	
 	//begin of AJR edits	
 	var tweetsReceived=0;
@@ -41,7 +47,15 @@ $(function(){
 	});
 	
 	$('.numTweets').html(NUM_OF_TWEETS);
-	
+	function setMaxMinBubbles() {
+		max_population = Math.ceil($(window).height() * $(window).width() / 35000); //TODO maybe replace with exponential fct.
+		min_pop = Math.ceil($(window).height() * $(window).width() / 120000);
+		console.log('max_population: '+max_population);
+		console.log('min_population: '+min_pop);
+	}
+	$(window).resize(function() {
+		setMaxMinBubbles();
+	});
 	function get_random_color() {
 		
 		/** getting it in HEX
@@ -80,9 +94,9 @@ $(function(){
 		console.log('getting new tweets for search term: '+q);
 		//var url='http://localhost:8080/search.json?q='+encodeURIComponent(q);
 		//var url='https://search.twitter.com/search.json?'+
-		var url='http://localhost/tib/proxy.php?'+
+		var url = TWITTER_PROXY_URL+
 			'result_type=recent&'+
-			'rpp='+NUM_OF_TWEETS+'&'+
+			'count='+NUM_OF_TWEETS+'&'+
 			'lang='+LANGUAGE+'&'+
 			'q='+encodeURIComponent(q);
 			
@@ -92,20 +106,21 @@ $(function(){
 		$.getJSON(url, function (data_,status){
 			data=data_;
 			console.log('status: '+data);
-			console.log('data length: '+data.results.length);
-			tweetsReceived= data.results.length;
+			//console.log('json encoded response: /n'+data);
+			console.log('data length: '+data.statuses.length);
+			tweetsReceived= data.statuses.length;
 								
 			for(var i=0;i<tweetsReceived;i++){	//for each tweet received
 				//words.push(data.results[i].from_user);	//also add the user to the seed pool
-				//console.log(data.results[i].from_user);
-				var txt=data.results[i].text.split(' ');
+				//console.log(data.statuses[i].user.screen_name);
+				var txt=data.statuses[i].text.split(' ');
 				var tweetColor = get_random_color();  //add custom color to tweet
 				for(var j=0;j<txt.length;j++){ //for every word in this tweet
 					if(!blacklist.test(txt[j])){	//filter blacklisted words out
 						seeds.push(
 							{
 								word: txt[j], 
-								tweet: data.results[i],
+								tweet: data.statuses[i],
 								color: tweetColor
 							}
 						);		//push word to seed pool
@@ -173,7 +188,7 @@ $(function(){
 	
 	// interaction functions
 	function spawn(e,word) {
-		console.log('Words Left in Pool: '+seeds.length);
+		// console.log('Words Left in Pool: '+seeds.length);
 		
 		$('.numWords').html(seeds.length);
 		
@@ -217,9 +232,9 @@ $(function(){
 				//window.open(twitLink);
 				
 				$('.selectedTweetInfo').html(
-					'<a class="twitterUser" href='+twitterURL+tweet.from_user +' target="newframe">'+
-					tweet.from_user+'</a>: '+
-					'<a class="tweet" href='+twitterURL+tweet.from_user+'/status/'+tweet.id_str+'>'+
+					'<a class="twitterUser" href='+twitterURL+tweet.user.name +' target="_blank">'+
+					tweet.user.name+'</a>: '+
+					'<a class="tweet" href='+twitterURL+tweet.user.name+'/status/'+tweet.id_str+' target="_blank">'+
 					tweet.text +
 					'</a>'
 				);
